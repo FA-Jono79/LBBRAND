@@ -385,14 +385,26 @@ const CONFIG = {
   // gång läcker eller behöver bytas ut.
   resultFlowUrl: "https://default98a701b1e22c45d299261f334ccac4.3d.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/21/workflows/a8ce1cef14254c13a38f226c8773037d/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=wzk17FFIeU4R7M4lPaO4Ot10XcELg9sLrlwKPqS3YKw",
   // Andel rätt som krävs för att räknas som godkänd genomgång (0.8 = 80%)
-  passThreshold: 0.8
+  passThreshold: 0.8,
+  // Antal frågor som slumpas fram ur frågebanken vid varje genomgång.
+  // Frågor markerade alltid: true kommer alltid med; resten fylls på slumpvis.
+  questionsPerTest: 12,
+  // Blanda även ordningen på svarsalternativen (rätt svar hamnar på olika plats).
+  shuffleOptions: true
 };
 
 /* =========================================================
-   FRÅGEBANK — lägg till, ta bort eller ändra frågor här
+   FRÅGEBANK — lägg till, ta bort eller ändra frågor här.
+   Frågor om larmhantering och schemafärger (grön/rosa) ligger
+   i FG5000-övningen sedan 2026-11, inte här.
+   Vid varje genomgång dras CONFIG.questionsPerTest frågor:
+   först alla med alltid: true, sedan slumpvis bland övriga.
+   Frågornas och svarsalternativens ordning blandas.
+   Antalet alltid-frågor får inte överstiga questionsPerTest.
    ========================================================= */
-const QUESTIONS = [
+const QUESTION_BANK = [
   {
+    alltid: true,
     cat: "Vid upptäckt brand",
     q: "Vad är det första du ska göra om du upptäcker brand eller ser rök?",
     options: [
@@ -412,30 +424,6 @@ const QUESTIONS = [
     why: "112 är det gemensamma nödnumret för räddningstjänst, ambulans och polis i Sverige. Lilla Bommen har ett brandlarm med automatisk larmöverföring till Räddningstjänsten. Det innebär att larmknapp i receptionen och vid disken i matsalen aktiverar larm till Räddningstjänsten."
   },
   {
-    cat: "Utrymning",
-    q: "Brandlarmet går när du är i tjänst. Vad gör du?",
-    options: [
-      "Fortsätter som vanligt tills du hör vidare instruktioner",
-      "Om jag är grön (schemafärg) ansvarar jag för att undersöka platsen som larmat och hålla kontakt med rosa (schemafärg). Om jag är rosa ansvarar jag för att hantera brandlarmscentralen.",
-      "Utrymmer mig själv eftersom det är säkrast",
-      "Tar min bil och åker hem"
-    ],
-    correct: 1,
-    why: "Personal ansvarar för att agera utifrån gällande rutiner med att undersöka om det är en brand, eventuellt släcka och bistå med utrymning om det är aktuellt. Vid brandlarm tar grön en brandsläckare och går till platsen som larmat. Rosa stannar i receptionen och hanterar brandlarmet. Vid Brandlarmscentralen ligger rutinblad som beskriver uppgifter. Slussens personal agerar på samma sätt som grön personal."
-  },
-  {
-    cat: "Brand",
-    q: "Du är rosa i schemat. Vad gör du om det är en aktiv brand som ni inte kan släcka?",
-    options: [
-      "Väntar på Räddningstjänsten",
-      "Jag trycker på larmknappen vid brandlarmscentralen, och ringer 112 och meddelar att det brinner. Jag uppger adress Sankt Eriksgatan 4 i Göteborg. Jag talar också om att det är ett stödboende och hur många personer som befinner sig i huset, både boenden och personal",
-      "Ringer chef i beredskap",
-      "Utrymmer boendet"
-    ],
-    correct: 1,
-    why: "Lilla Bommen har ett brandlarm som är automatiskt överfört till Räddningstjänsten. Det innebär att larmknappar sänder signal till Räddningstjänsten. Personal ska också ringa 112 för kunna ge mer information. Det kan också vara aktuellt att påbörja utrymning. Rosa ska förbereda en aktuell brandskyddslista med notering om vilka personer som är inne/ute och hur många personal det finns i huset."
-  },
-  {
     cat: "Återsamlingsplats",
     q: "Varför är det viktigt att alla samlas på återsamlingsplatsen vid utrymning?",
     options: [
@@ -446,18 +434,6 @@ const QUESTIONS = [
     ],
     correct: 2,
     why: "Avstämning gör att ni snabbt upptäcker om någon saknas och kan ge korrekt information till räddningstjänsten."
-  },
-  {
-    cat: "Brandlarmscentralen",
-    q: "Brandlarmet aktiveras. Du är rosa (schemafärg). Hur ska brandlarmet hanteras när det vid undersökning visar sig vara ett falsklarm?",
-    options: [
-      "Jag springer till platsen som larmat eftersom jag är lite osäker på hur brandlarmspanelen fungerar",
-      "Jag kvitterar larmet, inom 60 sekunder, på larmlagringen (den lilla panelen) genom att hålla in knapp 1. När grön personal rapporterar att det inte är någon brand återställer jag larmet på larmlagringen (den lilla panelen) genom att hålla in knapp 2.",
-      "Jag vrider på nyckeln och återställer på den övre panelen",
-      "Jag ringer installatören"
-    ],
-    correct: 1,
-    why: "Personal får bara hantera larmlagringen vid brandlarm. Nyckel ska bara användas av anläggningsskötare och Räddningstjänsten. Om man återställer med nyckel finns risk att man återställer ett larm som sänts till Räddningstjänsten. Det betraktas alltid som en obefogad utryckning och det medför en avgift för verksamheten."
   },
   {
     cat: "Brandsläckare",
@@ -530,8 +506,133 @@ const QUESTIONS = [
     ],
     correct: 3,
     why: "Personal ska skriva en tillbudsrapport i IDOK, och informera chef i beredskap. En strukturerad genomgång efteråt gör att brister i rutiner eller byggnad upptäcks och kan åtgärdas."
+  },
+  /* ---- Nya frågor 2026-10 (13–20) ---- */
+  {
+    cat: "Hiss",
+    q: "Får du använda hissen vid brand eller när brandlarmet går?",
+    options: [
+      "Ja, det går snabbast",
+      "Ja, men bara för boende som har svårt att gå i trappor",
+      "Nej, använd alltid trapporna — hissen kan stanna eller föra dig rakt in i rök",
+      "Ja, om du inte ser någon rök i hisschaktet"
+    ],
+    correct: 2,
+    why: "Hissen kan sluta fungera vid brand och hisschaktet kan fyllas med rök. Använd trapporna och hjälp boende som har svårt att gå."
+  },
+  {
+    cat: "Återsamlingsplats",
+    q: "Var ligger återsamlingsplatsen för Lilla Bommen?",
+    options: [
+      "Utanför Restaurang Simba",
+      "I receptionen",
+      "På gården innanför entrén",
+      "Det finns ingen bestämd plats, man samlas där det passar"
+    ],
+    correct: 0,
+    why: "Återsamlingsplatsen är utanför Restaurang Simba. En bestämd plats gör att inräkningen går snabbt och att ingen glöms bort."
+  },
+  {
+    cat: "Brandfilt",
+    q: "Det börjar brinna i en kastrull med olja på spisen. Vad gör du?",
+    options: [
+      "Häller vatten på kastrullen",
+      "Stänger av plattan och lägger brandfilt eller lock över kastrullen för att kväva elden",
+      "Bär ut kastrullen ur köket",
+      "Viftar bort lågorna med en handduk"
+    ],
+    correct: 1,
+    why: "Vatten på brinnande olja förångas explosionsartat och sprider branden. Kväv elden med lock eller brandfilt och låt det ligga kvar tills det svalnat."
+  },
+  {
+    cat: "Brandsläckare",
+    q: "Hur riktar du brandsläckaren när du släcker en brand?",
+    options: [
+      "Mot lågornas topp, där elden syns mest",
+      "Mot röken",
+      "Mot basen av branden, med svepande rörelser",
+      "Rakt upp i taket så att det regnar ner"
+    ],
+    correct: 2,
+    why: "Det som brinner finns vid basen av lågorna. Rikta strålen dit och svep från sida till sida, med reträttvägen bakom dig."
+  },
+  {
+    cat: "Branddörrar",
+    q: "Du ser att en branddörr är uppställd med en kil eller ett föremål. Vad gör du?",
+    options: [
+      "Låter den stå — någon har säkert ett skäl",
+      "Tar bort kilen så att dörren kan stänga, och informerar om det upprepas",
+      "Ställer upp fler dörrar så att det blir bättre ventilation",
+      "Väntar till nästa brandövning med att ta upp det"
+    ],
+    correct: 1,
+    why: "En branddörr gör bara nytta om den kan stänga. Uppställda branddörrar låter brand och rök sprida sig fritt mellan brandceller."
+  },
+  {
+    cat: "Utrymningsvägar",
+    q: "I en korridor som är utrymningsväg står möbler och kartonger. Vad gäller?",
+    options: [
+      "Det är okej så länge det går att tränga sig förbi",
+      "Det är okej tillfälligt, upp till en vecka",
+      "Utrymningsvägar ska alltid hållas fria — se till att det flyttas och informera ansvarig",
+      "Det spelar bara roll nattetid"
+    ],
+    correct: 2,
+    why: "I en verklig utrymning kan det vara rökigt och mörkt. Föremål i utrymningsvägen fördröjer och kan stänga vägen helt."
+  },
+  {
+    cat: "Utrymning",
+    q: "En boende vägrar lämna sitt rum vid utrymning trots att du uppmanat personen. Vad gör du?",
+    options: [
+      "Stannar kvar hos personen tills hen följer med, oavsett hur lång tid det tar",
+      "Stänger dörren till rummet, fortsätter utrymningen och meddelar räddningstjänsten exakt var personen finns",
+      "Låser dörren till rummet så att personen inte kan gå ut i röken",
+      "Låter det vara och nämner det inte"
+    ],
+    correct: 1,
+    why: "Riskera inte ditt eget liv. En stängd dörr skyddar personen en tid, och räddningstjänsten behöver veta exakt var hen finns. Lås aldrig in någon."
+  },
+  {
+    cat: "Om du inte kan ta dig ut",
+    q: "Trapphuset är rökfyllt och du kan inte ta dig ut. Vad gör du?",
+    options: [
+      "Springer genom röken så snabbt du kan",
+      "Stannar i ett rum, stänger dörren, tätar springor, ringer 112 och visar dig i fönstret",
+      "Gömmer dig i en garderob",
+      "Öppnar alla dörrar för att släppa ut röken"
+    ],
+    correct: 1,
+    why: "Ett stängt rum skyddar länge mot rök. Ring 112 och berätta var du är, täta med textilier och syns i fönstret så att räddningstjänsten hittar dig."
   }
 ];
+
+/* Drar en ny uppsättning frågor ur banken: alla alltid-frågor plus
+   slumpvis valda övriga, blandade, med blandade svarsalternativ. */
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function drawQuestions() {
+  const n = Math.min(CONFIG.questionsPerTest, QUESTION_BANK.length);
+  const fixed = QUESTION_BANK.filter(x => x.alltid);
+  const pool = shuffle(QUESTION_BANK.filter(x => !x.alltid));
+  const picked = shuffle(fixed.concat(pool.slice(0, Math.max(0, n - fixed.length))));
+  return picked.map(item => {
+    if (!CONFIG.shuffleOptions) return item;
+    const order = shuffle(item.options.map((_, i) => i));
+    return Object.assign({}, item, {
+      options: order.map(i => item.options[i]),
+      correct: order.indexOf(item.correct)
+    });
+  });
+}
+
+let QUESTIONS = drawQuestions();
 
 /* =========================================================
    Applikationslogik
@@ -551,7 +652,7 @@ function renderStart() {
   app.innerHTML = `
     <div class="org-label">${escapeHtml(CONFIG.orgName)}</div>
     <h1>Brand- och utrymningsgenomgång</h1>
-    <p>Gå igenom ${QUESTIONS.length} kortfattade frågor om vad som gäller vid brand och utrymning på boendet. Det tar cirka 5 minuter. Efter varje fråga får du direkt återkoppling.</p>
+    <p>Gå igenom ${Math.min(CONFIG.questionsPerTest, QUESTION_BANK.length)} kortfattade frågor om vad som gäller vid brand och utrymning på boendet. Det tar cirka 5 minuter. Efter varje fråga får du direkt återkoppling.</p>
     <div class="info-box">
       <dl>
         <dt>Återsamlingsplats</dt>
@@ -576,6 +677,7 @@ function renderStart() {
     window._namn = namn;
     window._epost = epost;
     current = 0; score = 0; missed = [];
+    QUESTIONS = drawQuestions(); // ny slumpad uppsättning vid varje start
     slideIndex = 0;
     renderSlide();
   });
