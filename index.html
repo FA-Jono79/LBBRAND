@@ -3,8 +3,8 @@
   BRAND- OCH UTRYMNINGSGENOMGÅNG — LILLA BOMMEN — frågebank
   =============================================
   Anpassad från Nylösegårdens NGBRAND-fil och genomgången av Jonas för
-  Lilla Bommens egna rutiner (återsamlingsplats, brandlarmscentralen,
-  grön/rosa schemaroller, automatisk larmöverföring till Räddningstjänsten).
+  Lilla Bommens egna rutiner (återsamlingsplats, automatisk larmöverföring
+  till Räddningstjänsten). Rollspecifik larmhantering (grön/rosa) finns i FG5000.
 
   Innan detta publiceras skarpt:
   1. Läs igenom hela frågebanken en gång till som en sista koll.
@@ -369,7 +369,7 @@
    ========================================================= */
 const CONFIG = {
   orgName: "Lilla Bommen",
-  assemblyPoint: "Utanför Restaurang Simba",
+  assemblyPoint: "Korsningen Sankt Eriksgatan – Mätaregatan",
   // Visas i samma grå ruta som återsamlingsplatsen på startsidan.
   importantInfo: "Lilla Bommen har brandlarm med automatisk överföring till Räddningstjänsten.",
   // Mejladressen resultatet skickas till om det automatiska inskicket inte
@@ -524,13 +524,13 @@ const QUESTION_BANK = [
     cat: "Återsamlingsplats",
     q: "Var ligger återsamlingsplatsen för Lilla Bommen?",
     options: [
-      "Utanför Restaurang Simba",
+      "I korsningen Sankt Eriksgatan – Mätaregatan",
       "I receptionen",
       "På gården innanför entrén",
       "Det finns ingen bestämd plats, man samlas där det passar"
     ],
     correct: 0,
-    why: "Återsamlingsplatsen är utanför Restaurang Simba. En bestämd plats gör att inräkningen går snabbt och att ingen glöms bort."
+    why: "Återsamlingsplatsen är i korsningen Sankt Eriksgatan – Mätaregatan. En bestämd plats gör att inräkningen går snabbt och att ingen glöms bort."
   },
   {
     cat: "Brandfilt",
@@ -707,11 +707,13 @@ const SLIDES = [
   {
     title: "Om brandlarmet går",
     bullets: [
-      "Du är en del av den lokala brandskyddsorganisationen",
-      "Agera utifrån schemafärg: rosa/röd hanterar brandlarmscentralen, grön undersöker platsen som larmat",
-      "Grön och Slussens personal tar sig till platsen som larmat och tar med en brandsläckare, för att inte fördröja en eventuell skarp insats"
+      "Ta alltid larmet på allvar och utgå från att det kan brinna på riktigt",
+      "Börja förbereda dig på att utrymning kan bli aktuell",
+      "Har du ingen larmuppgift: vänta på vidare instruktioner från boendepersonalen och rör inte brandlarmscentralen",
+      "Ansvarig person nås alltid i receptionen på intern anknytning 2636",
+      "Upptäcker du brand eller rök: Rädda – Larma – Varna – Släck"
     ],
-    icon: `<svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Rollmarkering">
+    icon: `<svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Brandlarm">
       <circle cx="48" cy="48" r="46" fill="var(--accent-bg)"/>
       <rect x="30" y="16" width="10" height="14" rx="4" fill="none" stroke="var(--ink)" stroke-width="4"/>
       <rect x="22" y="28" width="52" height="52" rx="8" fill="var(--bg)" stroke="var(--ink)" stroke-width="4"/>
@@ -724,7 +726,7 @@ const SLIDES = [
     title: "Vid utrymning",
     bullets: [
       "Var högljudd och tydlig med att det är en skarp situation",
-      "Uppmana boende att utrymma till återsamlingsplatsen, utanför Restaurang Simba",
+      "Uppmana boende att utrymma till återsamlingsplatsen, i korsningen Sankt Eriksgatan – Mätaregatan",
       "Utsätt inte dig själv för fara",
       "Stäng dörrar efter dig för att förhindra spridning av rök och eld"
     ],
