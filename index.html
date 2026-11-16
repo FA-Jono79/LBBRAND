@@ -3,8 +3,8 @@
   BRAND- OCH UTRYMNINGSGENOMGÅNG — LILLA BOMMEN — frågebank
   =============================================
   Anpassad från Nylösegårdens NGBRAND-fil och genomgången av Jonas för
-  Lilla Bommens egna rutiner (återsamlingsplats, brandlarmscentralen,
-  grön/rosa schemaroller, automatisk larmöverföring till Räddningstjänsten).
+  Lilla Bommens egna rutiner (återsamlingsplats, automatisk larmöverföring
+  till Räddningstjänsten). Rollspecifik larmhantering (grön/rosa) finns i FG5000.
 
   Innan detta publiceras skarpt:
   1. Läs igenom hela frågebanken en gång till som en sista koll.
@@ -369,7 +369,7 @@
    ========================================================= */
 const CONFIG = {
   orgName: "Lilla Bommen",
-  assemblyPoint: "Utanför Restaurang Simba",
+  assemblyPoint: "Korsningen Sankt Eriksgatan – Mätaregatan",
   // Visas i samma grå ruta som återsamlingsplatsen på startsidan.
   importantInfo: "Lilla Bommen har brandlarm med automatisk överföring till Räddningstjänsten.",
   // Mejladressen resultatet skickas till om det automatiska inskicket inte
@@ -395,6 +395,8 @@ const CONFIG = {
 
 /* =========================================================
    FRÅGEBANK — lägg till, ta bort eller ändra frågor här.
+   Frågor om larmhantering och schemafärger (grön/rosa) ligger
+   i FG5000-övningen sedan 2026-11, inte här.
    Vid varje genomgång dras CONFIG.questionsPerTest frågor:
    först alla med alltid: true, sedan slumpvis bland övriga.
    Frågornas och svarsalternativens ordning blandas.
@@ -422,32 +424,6 @@ const QUESTION_BANK = [
     why: "112 är det gemensamma nödnumret för räddningstjänst, ambulans och polis i Sverige. Lilla Bommen har ett brandlarm med automatisk larmöverföring till Räddningstjänsten. Det innebär att larmknapp i receptionen och vid disken i matsalen aktiverar larm till Räddningstjänsten."
   },
   {
-    alltid: true,
-    cat: "Utrymning",
-    q: "Brandlarmet går när du är i tjänst. Vad gör du?",
-    options: [
-      "Fortsätter som vanligt tills du hör vidare instruktioner",
-      "Om jag är grön (schemafärg) ansvarar jag för att undersöka platsen som larmat och hålla kontakt med rosa (schemafärg). Om jag är rosa ansvarar jag för att hantera brandlarmscentralen.",
-      "Utrymmer mig själv eftersom det är säkrast",
-      "Tar min bil och åker hem"
-    ],
-    correct: 1,
-    why: "Personal ansvarar för att agera utifrån gällande rutiner med att undersöka om det är en brand, eventuellt släcka och bistå med utrymning om det är aktuellt. Vid brandlarm tar grön en brandsläckare och går till platsen som larmat. Rosa stannar i receptionen och hanterar brandlarmet. Vid Brandlarmscentralen ligger rutinblad som beskriver uppgifter. Slussens personal agerar på samma sätt som grön personal."
-  },
-  {
-    alltid: true,
-    cat: "Brand",
-    q: "Du är rosa i schemat. Vad gör du om det är en aktiv brand som ni inte kan släcka?",
-    options: [
-      "Väntar på Räddningstjänsten",
-      "Jag trycker på larmknappen vid brandlarmscentralen, och ringer 112 och meddelar att det brinner. Jag uppger adress Sankt Eriksgatan 4 i Göteborg. Jag talar också om att det är ett stödboende och hur många personer som befinner sig i huset, både boenden och personal",
-      "Ringer chef i beredskap",
-      "Utrymmer boendet"
-    ],
-    correct: 1,
-    why: "Lilla Bommen har ett brandlarm som är automatiskt överfört till Räddningstjänsten. Det innebär att larmknappar sänder signal till Räddningstjänsten. Personal ska också ringa 112 för kunna ge mer information. Det kan också vara aktuellt att påbörja utrymning. Rosa ska förbereda en aktuell brandskyddslista med notering om vilka personer som är inne/ute och hur många personal det finns i huset."
-  },
-  {
     cat: "Återsamlingsplats",
     q: "Varför är det viktigt att alla samlas på återsamlingsplatsen vid utrymning?",
     options: [
@@ -458,19 +434,6 @@ const QUESTION_BANK = [
     ],
     correct: 2,
     why: "Avstämning gör att ni snabbt upptäcker om någon saknas och kan ge korrekt information till räddningstjänsten."
-  },
-  {
-    alltid: true,
-    cat: "Brandlarmscentralen",
-    q: "Brandlarmet aktiveras. Du är rosa (schemafärg). Hur ska brandlarmet hanteras när det vid undersökning visar sig vara ett falsklarm?",
-    options: [
-      "Jag springer till platsen som larmat eftersom jag är lite osäker på hur brandlarmspanelen fungerar",
-      "Jag kvitterar larmet, inom 60 sekunder, på larmlagringen (den lilla panelen) genom att hålla in knapp 1. När grön personal rapporterar att det inte är någon brand återställer jag larmet på larmlagringen (den lilla panelen) genom att hålla in knapp 2.",
-      "Jag vrider på nyckeln och återställer på den övre panelen",
-      "Jag ringer installatören"
-    ],
-    correct: 1,
-    why: "Personal får bara hantera larmlagringen vid brandlarm. Nyckel ska bara användas av anläggningsskötare och Räddningstjänsten. Om man återställer med nyckel finns risk att man återställer ett larm som sänts till Räddningstjänsten. Det betraktas alltid som en obefogad utryckning och det medför en avgift för verksamheten."
   },
   {
     cat: "Brandsläckare",
@@ -561,13 +524,13 @@ const QUESTION_BANK = [
     cat: "Återsamlingsplats",
     q: "Var ligger återsamlingsplatsen för Lilla Bommen?",
     options: [
-      "Utanför Restaurang Simba",
+      "I korsningen Sankt Eriksgatan – Mätaregatan",
       "I receptionen",
       "På gården innanför entrén",
       "Det finns ingen bestämd plats, man samlas där det passar"
     ],
     correct: 0,
-    why: "Återsamlingsplatsen är utanför Restaurang Simba. En bestämd plats gör att inräkningen går snabbt och att ingen glöms bort."
+    why: "Återsamlingsplatsen är i korsningen Sankt Eriksgatan – Mätaregatan. En bestämd plats gör att inräkningen går snabbt och att ingen glöms bort."
   },
   {
     cat: "Brandfilt",
@@ -744,11 +707,13 @@ const SLIDES = [
   {
     title: "Om brandlarmet går",
     bullets: [
-      "Du är en del av den lokala brandskyddsorganisationen",
-      "Agera utifrån schemafärg: rosa/röd hanterar brandlarmscentralen, grön undersöker platsen som larmat",
-      "Grön och Slussens personal tar sig till platsen som larmat och tar med en brandsläckare, för att inte fördröja en eventuell skarp insats"
+      "Ta alltid larmet på allvar och utgå från att det kan brinna på riktigt",
+      "Börja förbereda dig på att utrymning kan bli aktuell",
+      "Har du ingen larmuppgift: vänta på vidare instruktioner från boendepersonalen och rör inte brandlarmscentralen",
+      "Ansvarig person nås alltid i receptionen på intern anknytning 2636",
+      "Upptäcker du brand eller rök: Rädda – Larma – Varna – Släck"
     ],
-    icon: `<svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Rollmarkering">
+    icon: `<svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Brandlarm">
       <circle cx="48" cy="48" r="46" fill="var(--accent-bg)"/>
       <rect x="30" y="16" width="10" height="14" rx="4" fill="none" stroke="var(--ink)" stroke-width="4"/>
       <rect x="22" y="28" width="52" height="52" rx="8" fill="var(--bg)" stroke="var(--ink)" stroke-width="4"/>
@@ -761,7 +726,7 @@ const SLIDES = [
     title: "Vid utrymning",
     bullets: [
       "Var högljudd och tydlig med att det är en skarp situation",
-      "Uppmana boende att utrymma till återsamlingsplatsen, utanför Restaurang Simba",
+      "Uppmana boende att utrymma till återsamlingsplatsen, i korsningen Sankt Eriksgatan – Mätaregatan",
       "Utsätt inte dig själv för fara",
       "Stäng dörrar efter dig för att förhindra spridning av rök och eld"
     ],
